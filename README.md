@@ -1,68 +1,43 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# Yet Another Codeforces Visualizer
 
-## Available Scripts
+## Description
+Codeforces is a website that hosts competitive programming contests. While the site has lots of various programming problems from various computer science topics, users dont have much built-in tools to visualize their progress. "Yet Another Codeforces Visualizer" - is a website that makes various diagrams to better visualize codeforcews.com users progress, areas where they excel and where they should train. It also allows users to track their friends progress, comment on their profiles.  
 
-In the project directory, you can run:
+## Entity definition
+<br> Yet Another Codeforces Visualizer user  
+<br> username  regex [a-zA-Z0-9]+  
+<br> id - sha-2 hash  
+<br> Registration date  YYYY.MM.DD 
+<br> Profile data edition date YYYY.MM.DD  
+<br> friends (array of existing codeforces handles)  
+<br> about me (string, utf8, < 1MB)  
+<br> universities finished (array utf8,  < 1MB )  
+<br> codeforces handle (string (existing one))  
+<br> email (string of form xxx@yyy.zzz)  
 
-### `npm start`
+## API definition
+App will use these methods from codeforces API:  
+  
+<br> user.status - Returns submissions of specified user.  
+<br> user.rating - Returns rating history of the specified user.  
+<br> problemset.problems - Returns all problems from problemset. Problems can be filtered by tags.  
+<br> contest.standings - Returns the description of the contest and the requested part of the standings.  
+<br> contest.status - Returns submissions for specified contest. Optionally can return submissions of specified user.  
+<br> (...)  
 
-Runs the app in the development mode.<br>
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
-The page will reload if you make edits.<br>
-You will also see any lint errors in the console.
+ - GET /api/1/user/:userId/ - returns the specified user  
+   - 400 {error: 'user  with id: ${userId} does not exist'}   
+ - GET /api/1/user/:userId/friends/:startsWith - returns the specified user`s friends as array, starting from   
+   - 400 {error: 'user  with id: ${userId} does not exist'}   
+ - DELETE /api/1/user/:userId/friends/remove/:friendUserCodeforcesHandle - remove specific user from users friends   
+   - 400 {error: 'user  with id: ${userId} does not exist'}   
+   - 400 {error: '${friendUserCodeforcesHandle} does not exist on codeforces'    
+ - POST /api/1/user/:userId/friends/add/:friendUserId - add specified user to users friends   
+   - 400 {error: 'user  with id: ${userId} does not exist'}    
+   - 400 {error: 'user  with id: ${friendsUserId} does not exist'}    
+    
+   - 500 - {error: 'internal server error'}   
 
-### `npm test`
-
-Launches the test runner in the interactive watch mode.<br>
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `npm run build`
-
-Builds the app for production to the `build` folder.<br>
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.<br>
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (Webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
-
-### Analyzing the Bundle Size
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
-
-### Making a Progressive Web App
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
-
-### Advanced Configuration
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
-
-### Deployment
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
-
-### `npm run build` fails to minify
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+## UI definition
+<br><a href="https://wireframe.cc/6QxSlU">Vireframes</a>
