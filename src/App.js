@@ -1,20 +1,20 @@
 import React, { Component } from 'react';
 import './App.css';
 import Navigation from './Navigation';
-import HandleField from './HandleField';
 import Particles from 'react-particles-js';
 import 'tachyons';
 import SignIn from './Login';
 import Register from './Register';
 import Home from './Home';
+import Profile from './Profile';
 
 const particleOptions = {
   particles: {
     number: {
-      value: 30, 
+      value: 1, 
       density: {
         enable: true,
-        value_area: 100
+        value_area: 3
       }
     }
   }
@@ -26,30 +26,42 @@ class App extends Component {
     super();
     this.state = {
       route: 'home',
-      isLoggedIn: false //this state value is not updated correctly {yet}
+      isLoggedIn: false,
+      handleSubmitted: 'test'
     };
   }
 
   onRouteChange = (route)=>
   {
-    console.log(route);
     this.setState({route: route});
-    //this.setState({isLoggedIn: !(route==='login' || route==='register')});
+    if(this.state.route==='login' && route==='home')this.setState({isLoggedIn: true});
+    if(route==='logout')
+    {
+      this.setState({isLoggedIn: false});
+      this.setState({route: 'home'});
+    }
+  }
+
+  onHandleSubmit = (handle) =>
+  {
+    this.setState({handleSubmitted: handle});
   }
 
   render() {
-    const {route} = this.state;
+    const {route, isLoggedIn, handleSubmitted} = this.state;
 
     return (
       <div className="App">
         <Particles className="particles" params={particleOptions}/>
-        <Navigation onRouteChange={this.onRouteChange} />
+        <Navigation onRouteChange={this.onRouteChange} isLoggedIn={isLoggedIn}/>
         {
         route === 'login' ? 
         <SignIn onRouteChange={this.onRouteChange}/> :
         route === 'register' ?
         <Register onRouteChange={this.onRouteChange}/> :
-        <Home />
+        route === 'home' ?
+        <Home onRouteChange={this.onRouteChange} onHandleSubmit={this.onHandleSubmit}/> :
+        <Profile onRouteChange={this.onRouteChange} handle={handleSubmitted}/>
         }
       </div>
     );

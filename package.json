@@ -9,6 +9,7 @@
     "react-dom": "^16.8.6",
     "react-particles-js": "^2.5.1",
     "react-scripts": "2.1.8",
+    "react-vis": "^1.11.6",
     "tachyons": "^4.11.1"
   },
   "scripts": {
