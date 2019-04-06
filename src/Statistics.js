@@ -127,13 +127,13 @@ class Statistics extends Component{
     {
         return (
             <div>
-                <div style={{display: "flex"}}>
+                <div style={{display: "flex", flexWrap: "wrap"}}>
                     <PieChart title="Languages" data={this.getLangueagesData()}/>
                     <PieChart title="Sumbissions" data={this.getSuccessData()}/>
                     <PieChart title="Types of problems solved" data={this.getTagData()}/>
                 </div>
 
-                <div style={{display: "flex"}}>
+                <div style={{display: "flex", flexWrap: "wrap"}}>
                     <BarChart title="Problems by type" data={this.getProblemsTypeSolvedData()}/>
                     <BarChart title="Problems by rating" data={this.getProblemsRatingSolvedData()}/>
                 </div>

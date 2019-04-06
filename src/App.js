@@ -11,11 +11,7 @@ import Profile from './Profile';
 const particleOptions = {
   particles: {
     number: {
-      value: 1, 
-      density: {
-        enable: true,
-        value_area: 3
-      }
+      value: 160, 
     }
   }
 };
