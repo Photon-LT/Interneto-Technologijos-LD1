@@ -26,7 +26,7 @@ class Profile extends Component{
     {
         const {fetchData} = this.state;
         return (
-            <article className="br3 ba b--black-10 mv4 mw8 shadow-5 center pa4 ma2">
+            <article className="br3 ba b--black-10 mv4 mw10 shadow-5 center pa4 ma2">
                 {
                     this.state.isFetchDone && fetchData.status==='OK' ?
                     <Statistics fetchData={fetchData.result} />
