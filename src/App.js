@@ -9,11 +9,31 @@ import Home from './Home';
 import Profile from './Profile';
 
 const particleOptions = {
-  particles: {
-    number: {
-      value: 160, 
-    }
-  }
+    "particles": {
+        "number": {
+            "value": 160,
+            "density": {
+                "enable": false
+            }
+        },
+        "size": {
+            "value": 10,
+            "random": true,
+            "anim": {
+                "speed": 2,
+                "size_min": 0.1
+            }
+        },
+        "line_linked": {
+            "enable": false
+        },
+        "move": {
+            "random": true,
+            "speed": 1,
+            "direction": "top",
+            "out_mode": "out"
+        }
+    },
 };
 
 class App extends Component {
