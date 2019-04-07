@@ -3,9 +3,11 @@ const express = require('express');
 const path = require('path');
 const app = express();
 const MongoClient = require('mongodb').MongoClient;
+const nodemailer = require('nodemailer');
 
 const DB_URL = process.env.DB_URL;
 const DB_NAME = process.env.NODE_ENV === 'production' ? 'interneto_technologijos' : 'interneto_technologijos_testing';
+const EMAIL_PASS = process.env.EMAIL_PASS;
 
 if(process.env.NODE_ENV === 'production') // <- forces usage of HTTPS when hosted on HEROKu
 {
@@ -17,9 +19,33 @@ if(process.env.NODE_ENV === 'production') // <- forces usage of HTTPS when hoste
   })
 }
 
+//Email stuff
+const transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: 'codeforces.visualizer@gmail.com',
+    pass: EMAIL_PASS
+  }
+});
+
+/* Sending email - example
+transporter.sendMail(
+  {from: 'codeforces.visualizer@gmail.com',
+   to: 'paulius.gasiukevicius@gmail.com',
+   subject: 'test',
+   text: 'wait\nThat\'s it?'},
+    (error, info)=>{
+  if (error) console.log(error);
+   else console.log('Email sent: ' + info.response);
+}); 
+*/
+
+
+// Middleware
 app.use(express.static(path.join(__dirname, '..', 'build')));
 app.use(BodyParser.json());
 app.use(BodyParser.urlencoded({ extended: true }));
+
 
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname,  '..', 'build', 'index.html'));
@@ -43,14 +69,13 @@ app.listen(process.env.PORT || 8080, () => {
     console.log("Connected to `" + DB_NAME + "`!");
 
     app.post("/person", (request, response) => {
-      collection.insert(request.body, (error, result) => {
+      collection.insertOne(request.body, (error, result) => {
           if(error) return response.status(500).send(error);
           response.send(result.result);
       });
     });
     
     app.get("/people", (request, response) => {
-      console.log("WAT");
       collection.find({}).toArray((error, result) => {
           if(error) return response.status(500).send(error);
           response.send(result);

@@ -7,6 +7,8 @@ class Login extends Component{
         const {onRouteChange} = this.props;
         const email = document.getElementById('login-email').value;
         const pass = document.getElementById('login-pass').value;
+        console.log(JSON.stringify({user: {email,pass}}));
+        
         fetch('/person', {
             method: 'POST',
             headers: {

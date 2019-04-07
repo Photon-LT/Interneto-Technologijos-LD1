@@ -6,16 +6,16 @@
     "body-parser": "^1.18.3",
     "express": "^4.16.4",
     "file-system": "^2.2.2",
-    "http": "0.0.0",
     "https": "^1.0.0",
+    "joi": "^14.3.1",
     "mongodb": "^3.2.3",
+    "nodemailer": "^6.1.0",
     "passport": "^0.4.0",
     "path": "^0.12.7",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
     "react-particles-js": "^2.5.1",
     "react-scripts": "2.1.8",
-    "react-vis": "^1.11.6",
     "tachyons": "^4.11.1",
     "victory": "^32.1.0"
   },
@@ -34,5 +34,8 @@
     "not ie <= 11",
     "not op_mini all"
   ],
-  "proxy": "http://localhost:8080"
+  "proxy": "http://localhost:8080",
+  "devDependencies": {
+    "nodemon": "^1.18.10"
+  }
 }
