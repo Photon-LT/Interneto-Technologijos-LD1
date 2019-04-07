@@ -1,20 +1,14 @@
-const https = require('https');
-const http = require('http');
-const fs = require('file-system');
+const BodyParser = require("body-parser");
 const express = require('express');
 const path = require('path');
 const app = express();
+const MongoClient = require('mongodb').MongoClient;
 
-/*
-const privateKey = fs.readFileSync(path.join(__dirname, 'key.pem'));
-const publicKey = fs.readFileSync(path.join(__dirname , 'certificate.pem'));
-//https.createServer({key: privateKey, cert: publicKey}, app).listen(process.env.PORT || 8081);
-//^does not work for heroku
-*/
+const DB_URL = process.env.DB_URL;
+const DB_NAME = process.env.NODE_ENV === 'production' ? 'interneto_technologijos' : 'interneto_technologijos_testing';
 
-http.createServer(app).listen(process.env.PORT || 8080);
-
-if(process.env.NODE_ENV === 'production') {
+if(process.env.NODE_ENV === 'production') // <- forces usage of HTTPS when hosted on HEROKu
+{
   app.use((req, res, next) => {
     if (req.header('x-forwarded-proto') !== 'https')
       res.redirect(`https://${req.header('host')}${req.url}`)
@@ -24,11 +18,50 @@ if(process.env.NODE_ENV === 'production') {
 }
 
 app.use(express.static(path.join(__dirname, '..', 'build')));
+app.use(BodyParser.json());
+app.use(BodyParser.urlencoded({ extended: true }));
 
-app.get('/', function (req, res) {
+app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname,  '..', 'build', 'index.html'));
 });
 
-app.get('/test', function (req, res) {
+app.get('/test', (req, res) => {
   res.send('OK ♣');
+});
+
+app.post('/login', (req, res) => {
+  console.log(req.body);
+  res.send({status: 'ok'});
+});
+
+app.listen(process.env.PORT || 8080, () => {
+  MongoClient.connect(DB_URL, { useNewUrlParser: true }, (error, client) => {
+    if(error) throw error;
+
+    database = client.db(DB_NAME);
+    collection = database.collection("people");
+    console.log("Connected to `" + DB_NAME + "`!");
+
+    app.post("/person", (request, response) => {
+      collection.insert(request.body, (error, result) => {
+          if(error) return response.status(500).send(error);
+          response.send(result.result);
+      });
+    });
+    
+    app.get("/people", (request, response) => {
+      console.log("WAT");
+      collection.find({}).toArray((error, result) => {
+          if(error) return response.status(500).send(error);
+          response.send(result);
+      });
+    });
+    
+    app.get("/person/:id", (request, response) => {
+      collection.findOne({ "_id": new ObjectId(request.params.id) }, (error, result) => {
+          if(error) return response.status(500).send(error);
+          response.send(result);
+      });
+    });
+  });
 });
