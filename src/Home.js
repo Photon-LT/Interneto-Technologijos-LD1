@@ -1,11 +1,9 @@
 import React, {Component} from 'react';
-import HandleField from './HandleField.js';
 
 class Home extends Component{
 
     render()
     {
-        const {onRouteChange, onHandleSubmit} = this.props;
         return (
             <article className="br3 ba b--black-10 mv4 mw8 shadow-5 center pa4 ma2">
                 <p className="f1 b">Yet Another Codeforces visualizer</p>
@@ -17,7 +15,7 @@ class Home extends Component{
                 It also allows users to track their friends progress, comment on their profiles and so on.</p>
                 <br />
                 <p className="f4 tc">Want to see how it works?</p>
-                <HandleField onRouteChange={onRouteChange} onHandleSubmit={onHandleSubmit}/>
+                <p className="f4 tc">Enter some codeforces handle on search bar above</p>
             </article>
         );
     }

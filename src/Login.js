@@ -4,12 +4,11 @@ class Login extends Component{
 
     login = () => 
     {
-        const {onRouteChange} = this.props;
         const email = document.getElementById('login-email').value;
         const pass = document.getElementById('login-pass').value;
         console.log(JSON.stringify({user: {email,pass}}));
         
-        fetch('/person', {
+        fetch('/login', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -20,9 +19,9 @@ class Login extends Component{
             .then((data) =>  {
                 console.log(data);
                 if(data.status !== 'ok')
-                onRouteChange('home');
+                    alert(data.message);
                 else
-                onRouteChange('login');
+                    this.props.onLogin(data.user);
             })
             .catch((err)=>console.log(err))
     }

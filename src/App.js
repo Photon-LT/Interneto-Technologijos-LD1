@@ -3,10 +3,11 @@ import './App.css';
 import Navigation from './Navigation';
 import Particles from 'react-particles-js';
 import 'tachyons';
-import SignIn from './Login';
+import Login from './Login';
 import Register from './Register';
 import Home from './Home';
 import Profile from './Profile';
+import Settings from './Settings';
 
 const particleOptions = {
     "particles": {
@@ -43,17 +44,25 @@ class App extends Component {
     this.state = {
       route: 'home',
       isLoggedIn: false,
-      handleSubmitted: 'test'
+      handleSubmitted: 'test',
+      user: null
     };
+  }
+
+  onLogin = (user) =>
+  {
+    this.setState({user: user});
+    this.setState({isLoggedIn: true});
+    this.onRouteChange('home');
   }
 
   onRouteChange = (route)=>
   {
     this.setState({route: route});
-    if(this.state.route==='login' && route==='home')this.setState({isLoggedIn: true});
     if(route==='logout')
     {
       this.setState({isLoggedIn: false});
+      this.setState({user: null});
       this.setState({route: 'home'});
     }
   }
@@ -69,14 +78,16 @@ class App extends Component {
     return (
       <div className="App">
         <Particles className="particles" params={particleOptions}/>
-        <Navigation onRouteChange={this.onRouteChange} isLoggedIn={isLoggedIn}/>
+        <Navigation onRouteChange={this.onRouteChange} isLoggedIn={isLoggedIn} onHandleSubmit={this.onHandleSubmit}/>
         {
         route === 'login' ? 
-        <SignIn onRouteChange={this.onRouteChange}/> :
+        <Login onLogin={this.onLogin}/> :
         route === 'register' ?
         <Register onRouteChange={this.onRouteChange}/> :
         route === 'home' ?
-        <Home onRouteChange={this.onRouteChange} onHandleSubmit={this.onHandleSubmit}/> :
+        <Home onRouteChange={this.onRouteChange} /> :
+        route === 'settings' ?
+        <Settings />:
         <Profile onRouteChange={this.onRouteChange} handle={handleSubmitted}/>
         }
       </div>
