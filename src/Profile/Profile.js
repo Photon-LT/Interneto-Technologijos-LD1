@@ -33,6 +33,8 @@ class Profile extends Component{
 
     fetchUserInfoData = () =>
     {
+        this.setState({isUserRegisteredOnOurSite: false});
+
         fetch(`/user/${this.props.handle}`, {
             method: 'GET',
             headers: {'Content-Type': 'application/json'},
@@ -42,8 +44,8 @@ class Profile extends Component{
                 console.log(data);
                 if(data.status === 'ok')
                     {
-                        this.setState({isUserRegisteredOnOurSite: true});
                         this.setState({user: data.data});
+                        this.setState({isUserRegisteredOnOurSite: true});
                     }
             })
             .catch((err)=>console.log(err))
@@ -51,11 +53,11 @@ class Profile extends Component{
 
     fetchComments = () =>
     {
+        this.setState({areCommentsLoaded: false});
         fetch(`/comments/${this.props.handle}`)
         .then(res => res.json())
         .then(data => {
             this.setState({commentsData: data});
-            console.log('response as json: ', data);
             this.setState({areCommentsLoaded: true});
         })
         .catch(error => console.log(error));
