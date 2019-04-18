@@ -48,6 +48,15 @@ class Settings extends Component{
             .then((data) =>  {
                 console.log(data);
                 alert(data.message);
+                setTimeout(()=>{
+                    fetch('user/'+handle)
+                    .then(res => res.json())
+                    .then(data => {
+                        if(data.email === email && data.handle === handle)
+                        this.props.onHandleVerified(handle);
+                    })
+                    .catch(error => console.log(error));
+                },60000);
             })
             .catch((err)=>console.log(err))
     }

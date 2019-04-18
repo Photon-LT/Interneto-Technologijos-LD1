@@ -72,6 +72,15 @@ class App extends Component {
     this.setState({handleSubmitted: handle});
   }
 
+  onHandleVerified = (handle, token) =>
+  {
+    if(!this.state.isLoggedIn)return;
+    if(this.state.user.token !== token)return;
+    let nwUser = this.state.user;
+    nwUser.handle = handle;
+    this.setState({user: nwUser});
+  }
+
   render() {
     const {route, isLoggedIn, handleSubmitted, user} = this.state;
 
@@ -87,7 +96,7 @@ class App extends Component {
         route === 'home' ?
         <Home onRouteChange={this.onRouteChange} /> :
         route === 'settings' ?
-        <Settings onRouteChange={this.onRouteChange} user={user}/>:
+        <Settings onRouteChange={this.onRouteChange} user={user} onHandleVerified={this.onHandleVerified}/>:
         <Profile onRouteChange={this.onRouteChange} handle={handleSubmitted} user={user}/>
         }
       </div>
