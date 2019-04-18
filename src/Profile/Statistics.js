@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
-import PieChart from "./PieChart";
-import BarChart from "./BarChart";
+import PieChart from "./StatisticsComponents/PieChart";
+import BarChart from "./StatisticsComponents/BarChart";
 
 class Statistics extends Component{
 

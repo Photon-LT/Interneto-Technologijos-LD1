@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 import './App.css';
-import Navigation from './Navigation';
+import Navigation from './Navigation/Navigation';
 import Particles from 'react-particles-js';
 import 'tachyons';
-import Login from './Login';
-import Register from './Register';
-import Home from './Home';
-import Profile from './Profile';
-import Settings from './Settings';
+import Login from './Login/Login';
+import Register from './Register/Register';
+import Home from './Home/Home';
+import Profile from './Profile/Profile';
+import Settings from './Settings/Settings';
 
 const particleOptions = {
     "particles": {
@@ -72,13 +72,21 @@ class App extends Component {
     this.setState({handleSubmitted: handle});
   }
 
-  onHandleVerified = (handle, token) =>
+  checkIfHandleVerified = (handle) =>
   {
     if(!this.state.isLoggedIn)return;
-    if(this.state.user.token !== token)return;
-    let nwUser = this.state.user;
-    nwUser.handle = handle;
-    this.setState({user: nwUser});
+    
+    fetch('user/'+handle)
+    .then(res => res.json())
+    .then(data => {
+        if(data.email === this.state.user.email)
+        {
+          let nwUser = this.state.user;
+          nwUser.handle = handle;
+          this.setState({user: nwUser});
+        }
+    })
+    .catch(error => console.log(error));
   }
 
   render() {
@@ -96,8 +104,8 @@ class App extends Component {
         route === 'home' ?
         <Home onRouteChange={this.onRouteChange} /> :
         route === 'settings' ?
-        <Settings onRouteChange={this.onRouteChange} user={user} onHandleVerified={this.onHandleVerified}/>:
-        <Profile onRouteChange={this.onRouteChange} handle={handleSubmitted} user={user}/>
+        <Settings onRouteChange={this.onRouteChange} user={user} />:
+        <Profile onRouteChange={this.onRouteChange} handle={handleSubmitted} user={user} checkIfHandleVerified={this.checkIfHandleVerified}/>
         }
       </div>
     );

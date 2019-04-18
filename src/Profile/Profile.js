@@ -66,6 +66,7 @@ class Profile extends Component{
         this.fetchDataFromCodeforces();
         this.fetchUserInfoData();
         this.fetchComments();
+        this.props.checkIfHandleVerified(this.props.handle);
     }
 
     componentDidUpdate(prevProps)
@@ -75,6 +76,7 @@ class Profile extends Component{
             this.fetchDataFromCodeforces();
             this.fetchUserInfoData();
             this.fetchComments();
+            this.props.checkIfHandleVerified(this.props.handle);
         }
     }
 
