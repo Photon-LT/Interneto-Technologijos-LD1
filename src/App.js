@@ -73,7 +73,7 @@ class App extends Component {
   }
 
   render() {
-    const {route, isLoggedIn, handleSubmitted} = this.state;
+    const {route, isLoggedIn, handleSubmitted, user} = this.state;
 
     return (
       <div className="App">
@@ -87,8 +87,8 @@ class App extends Component {
         route === 'home' ?
         <Home onRouteChange={this.onRouteChange} /> :
         route === 'settings' ?
-        <Settings />:
-        <Profile onRouteChange={this.onRouteChange} handle={handleSubmitted}/>
+        <Settings onRouteChange={this.onRouteChange} user={user}/>:
+        <Profile onRouteChange={this.onRouteChange} handle={handleSubmitted} user={user}/>
         }
       </div>
     );

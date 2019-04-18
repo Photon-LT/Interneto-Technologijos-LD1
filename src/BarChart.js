@@ -10,7 +10,7 @@ class PieChart extends Component{
         return (
                 <div className="br3 ba b--black-10 mv4 mw10 shadow-5 center">
                     <h2>{title}</h2>
-                    <div style={{maxWidth: 600, minWidth: 400}}>
+                    <div style={{maxWidth: 600, minWidth: 300}}>
                         <VictoryChart>
                             <VictoryBar
                                 data={data}

@@ -11,7 +11,7 @@ class Profile extends Component{
             isFetchDone: false,
             fetchData: {},
             areCommentsLoaded: false,
-            comments: {},
+            commentsData: {},
             isUserRegisteredOnOurSite: false,
             user: {}
         };
@@ -40,9 +40,7 @@ class Profile extends Component{
             .then((res) => res.json())
             .then((data) =>  {
                 console.log(data);
-                if(data.status !== 'ok')
-                    alert(data.message);
-                else
+                if(data.status === 'ok')
                     {
                         this.setState({isUserRegisteredOnOurSite: true});
                         this.setState({user: data.data});
@@ -53,23 +51,37 @@ class Profile extends Component{
 
     fetchComments = () =>
     {
-        
+        fetch(`/comments/${this.props.handle}`)
+        .then(res => res.json())
+        .then(data => {
+            this.setState({commentsData: data});
+            console.log('response as json: ', data);
+            this.setState({areCommentsLoaded: true});
+        })
+        .catch(error => console.log(error));
     }
 
     componentDidMount()
     {
         this.fetchDataFromCodeforces();
+        this.fetchUserInfoData();
+        this.fetchComments();
     }
 
     componentDidUpdate(prevProps)
     {
         if(this.props.handle !== prevProps.handle)
-        this.fetchDataFromCodeforces();
+        {
+            this.fetchDataFromCodeforces();
+            this.fetchUserInfoData();
+            this.fetchComments();
+        }
     }
 
     render()
     {
-        const {fetchData, user} = this.state;
+        const {fetchData, user, commentsData} = this.state;
+
         return (
             <div>
                 <article className="br3 ba b--black-10 mv4 mw9 shadow-5 center pa4 ma2">
@@ -92,7 +104,7 @@ class Profile extends Component{
                 <article className="br3 ba b--black-10 mv4 mw9 shadow-5 center pa4 ma2">
                     {
                         this.state.areCommentsLoaded ?
-                        <Comments/>
+                        <Comments commentsData={commentsData} user={this.props.user} handle={this.props.handle} fetchComments={this.fetchComments}/>
                     : 
                     <p>Loading...</p>
                     }

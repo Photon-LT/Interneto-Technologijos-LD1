@@ -4,6 +4,7 @@ const path = require('path');
 const MongoClient = require('mongodb').MongoClient;
 const nodemailer = require('nodemailer');
 const randomString = require("randomstring");
+const fetch = require('node-fetch');
 const app = express();
 
 const DB_URL = process.env.DB_URL;
@@ -85,7 +86,7 @@ app.listen(process.env.PORT || 8080, () => {
         if(temp_user === null)return res.status(404).send('It appears that your token has expired or it already was activated');
 
         let user = {email: temp_user.email, pass: temp_user.pass};
-        temp_users.deleteMany({token: temp_user.token});
+        temp_users.delete({token: temp_user.token});
         users.insertOne(user, (error, result) => {
           if(error)return res.status(500).send(error);
         });
@@ -110,8 +111,9 @@ app.listen(process.env.PORT || 8080, () => {
     });
     
     app.get("/user/:handle", (req, res) => {
-      users.findOne({ handle: req.params.handle }, (error, result) => {
+      users.findOne({ handle: req.params.handle.toLowerCase() }, (error, result) => {
           if(error) return res.status(500).send({status: "fail", message: error});
+          if(req.params.handle.length < 3)res.send({status: "fail", message: "invalid handle"});
           if(result === null)return res.send({status: "fail", message: "User Does not exits in DB"});
           let data = result;
           delete data._id;
@@ -122,12 +124,98 @@ app.listen(process.env.PORT || 8080, () => {
     });
 
     app.get("/comments/:handle", (req, res) => {
-      comments.findMany({ handle: req.params.handle }, (error, result) => {
+      comments.find({ handle: req.params.handle }).toArray((error, result) => {
         if(error) return res.status(500).send({status: "fail", message: error});
-        if(result === null)return res.send({status: "fail", message: "No comments exist yet"});
-        res.send({status: "ok", data: result});
+        if(!result)return res.send({status: "none", message: "No comments exist yet"});
+        res.send({status: "ok", comments: result});
     });
     });
+
+    app.post("/change/pass", (req, res) => {
+      const {email, token, pass, newPass, newPass2} = req.body.user;
+      users.findOne({email: email}, (error, user) => {
+      if(user === null)return res.send({status: 'fail', message: 'Error'});
+      //if(token !== user.token)res.send({status: 'fail', message: "session expired, please relogin to continue"});
+      if(pass !== user.pass)return res.send({status: 'fail', message: 'Current password is incorrect'});
+      if(newPass !== newPass2)return res.send({status: 'fail', message: 'New password and confirm new password does not match'});
+      
+      users.updateOne({email: email}, {$set: {pass: newPass}}, (error, result) => {
+        if(error)return res.status(500).send(error);
+        res.send({status: 'ok', message: "Password successfully changed"});
+      });
+    });
+  });
+
+  app.post("/update/about/me", (req, res) => {
+    const {email, token, aboutMe} = req.body.user;
+    users.findOne({email: email}, (error, user) => {
+    if(user === null)return res.send({status: 'fail', message: 'Error'});
+    if(token !== user.token)res.send({status: 'fail', message: "session expired, please relogin to continue"});
+    
+    users.updateOne({email: email}, {$set: {aboutMe: aboutMe}}, (error, result) => {
+      if(error)return res.status(500).send(error);
+      res.send({status: 'ok', message: "About me section successfully updated"});
+    });
+  });
+});
+
+app.post("/post/comment", (req, res) => {
+  const {email, handle, token, content} = req.body;
+  users.findOne({email: email}, (error, user) => {
+  if(error)return res.send({status: 'fail', message: error});
+  if(user === null)return res.send({status: 'fail', message: 'Error'});
+  if(!user.hasOwnProperty('handle'))return res.send({status: 'fail', message: 'User does not have verified handle'});
+  if(token !== user.token)res.send({status: 'fail', message: "session expired, please relogin to continue"});
+  
+  comments.insertOne({handle: handle, content: content, posterHandle: user.handle}, (error, result) => {
+    if(error)return res.status(500).send(error);
+    res.send({status: 'ok', message: "Comment successfully posted"});
+  });
+});
+});
+
+app.delete("/delete/account", (req, res) => {
+  const {email, token, pass} = req.body.user;
+  users.findOne({email: email}, (error, user) => {
+  if(user === null)return res.send({status: 'fail', message: 'Error'});
+  if(pass !== user.pass)return res.send({status: 'fail', message: 'Incorrect password'});
+
+  users.deleteOne({email: email}, (error, result) => {
+    if(error)return res.status(500).send(error);
+    res.send({status: 'ok', message: "Account successfully deleted"});
+  });
+});
+});
+
+app.post("/verify/handle", (req, res) => {
+  const {email, token, handle} = req.body.user;
+  users.findOne({email: email}, (error, user) => {
+  if(user === null)return res.send({status: 'fail', message: 'Error'});
+  if(token !== user.token)res.send({status: 'fail', message: "session expired, please relogin to continue"});
+
+  fetch('https://codeforces.com/api/problemset.problems')
+  .then(resp => resp.json())
+  .then(data => {
+    let idx = Math.floor(Math.random()*data.result.problems.length);
+    let problemId = data.result.problems[idx].contestId + '/' + data.result.problems[idx].index;
+    let url = 'https://codeforces.com/problemset/problem/' + problemId;
+    res.send({message: "Please follow this link and submit a compolation error in one minute to verify this handle is yours\n" + url});
+    setTimeout(()=>{
+      fetch('https://codeforces.com/api/user.status?handle='+handle)
+      .then(resp => resp.json())
+      .then(data => {
+        if(data.result[0].verdict === "COMPILATION_ERROR" 
+        && data.result[0].problem.contestId + '/' + data.result[0].problem.index === problemId)
+          users.updateOne({email: email}, {$set: {handle: handle}});
+      })
+      .catch(error);
+    }, 60000);
+  })
+  .catch(error => res.send({message: error}));
+});
+});
+
+
 
   });
 });

@@ -9,6 +9,7 @@
     "https": "^1.0.0",
     "joi": "^14.3.1",
     "mongodb": "^3.2.3",
+    "node-fetch": "^2.3.0",
     "nodemailer": "^6.1.0",
     "passport": "^0.4.0",
     "path": "^0.12.7",

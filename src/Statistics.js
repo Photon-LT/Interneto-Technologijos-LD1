@@ -129,7 +129,7 @@ class Statistics extends Component{
             <div>
                 <div style={{display: "flex", flexWrap: "wrap"}}>
                     <PieChart title="Languages" data={this.getLangueagesData()}/>
-                    <PieChart title="Sumbissions" data={this.getSuccessData()}/>
+                    <PieChart title="Submissions" data={this.getSuccessData()}/>
                     <PieChart title="Types of problems solved" data={this.getTagData()}/>
                 </div>
 
