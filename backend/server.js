@@ -45,6 +45,7 @@ app.get('/test', (req, res) => {
 });
 
 app.listen(process.env.PORT || 8080, () => {
+  console.log(process.env.PORT);
   MongoClient.connect(DB_URL, { useNewUrlParser: true }, (error, client) => {
     if(error) throw error;
 
@@ -86,12 +87,11 @@ app.listen(process.env.PORT || 8080, () => {
         if(temp_user === null)return res.status(404).send('It appears that your token has expired or it already was activated');
 
         let user = {email: temp_user.email, pass: temp_user.pass};
-        temp_users.delete({token: temp_user.token});
         users.insertOne(user, (error, result) => {
           if(error)return res.status(500).send(error);
-          return res.send({message: "Account successfully activated"});
-          //return res.redirect(`http://${req.header('host')}`);
+          return res.redirect(`http://${req.header('host')}`);
         });
+        temp_users.deleteMany({token: temp_user.token});
       });
     });
 
