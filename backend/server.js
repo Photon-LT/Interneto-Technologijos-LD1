@@ -89,8 +89,9 @@ app.listen(process.env.PORT || 8080, () => {
         temp_users.delete({token: temp_user.token});
         users.insertOne(user, (error, result) => {
           if(error)return res.status(500).send(error);
+          return res.send({message: "Account successfully activated"});
+          //return res.redirect(`http://${req.header('host')}`);
         });
-        return res.redirect(`http://${req.header('host')}`);
       });
     });
 
