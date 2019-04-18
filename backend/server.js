@@ -80,7 +80,7 @@ app.listen(process.env.PORT || 8080, () => {
     });
 
     app.get('/verify/email', (req, res) => {
-      if(req.query.token === null)res.status(404).send('It appears that your token has expired or it already was activated');
+      if(req.query.token === null)return res.status(404).send('It appears that your token has expired or it already was activated');
       temp_users.findOne({token: req.query.token}, (error, temp_user) => {
         if(error)return res.status(500).send(error);
         if(temp_user === null)return res.status(404).send('It appears that your token has expired or it already was activated');
@@ -90,7 +90,7 @@ app.listen(process.env.PORT || 8080, () => {
         users.insertOne(user, (error, result) => {
           if(error)return res.status(500).send(error);
         });
-        res.redirect(`http://${req.header('host')}`);
+        return res.redirect(`http://${req.header('host')}`);
       });
     });
 
