@@ -72,23 +72,6 @@ class App extends Component {
     this.setState({handleSubmitted: handle});
   }
 
-  checkIfHandleVerified = (handle) =>
-  {
-    if(!this.state.isLoggedIn)return;
-    
-    fetch('user/'+handle)
-    .then(res => res.json())
-    .then(data => {
-        if(data.email === this.state.user.email)
-        {
-          let nwUser = this.state.user;
-          nwUser.handle = handle;
-          this.setState({user: nwUser});
-        }
-    })
-    .catch(error => console.log(error));
-  }
-
   render() {
     const {route, isLoggedIn, handleSubmitted, user} = this.state;
 
@@ -105,7 +88,7 @@ class App extends Component {
         <Home onRouteChange={this.onRouteChange} /> :
         route === 'settings' ?
         <Settings onRouteChange={this.onRouteChange} user={user} />:
-        <Profile onRouteChange={this.onRouteChange} handle={handleSubmitted} user={user} checkIfHandleVerified={this.checkIfHandleVerified}/>
+        <Profile onRouteChange={this.onRouteChange} handle={handleSubmitted} user={user} />
         }
       </div>
     );

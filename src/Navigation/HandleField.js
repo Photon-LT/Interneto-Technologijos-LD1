@@ -4,8 +4,8 @@ class HandleField extends Component {
   render() {
     const {onRouteChange,onHandleSubmit} = this.props;
     return (
-      <div className="f3 pa3" style={{display: "flex", marginLeft: "15%"}}>
-      <input className="pa3 ma2 ba bg-transparent hover-white w-100" type="text" name="handle-input"  id="handle-input" placeholder="Enter codeforces handle"/>
+      <div className="f3 pa3 flex-wrap justify-center">
+      <input className="pa3 ma2 ba bg-transparent hover-white" type="text" id="handle-input" placeholder="Enter codeforces handle"/>
           <input onClick={() => {
             onHandleSubmit(document.getElementById('handle-input').value);
             onRouteChange('profile');

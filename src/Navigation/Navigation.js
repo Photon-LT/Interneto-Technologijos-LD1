@@ -7,19 +7,18 @@ class Navigation extends Component {
     
     return (
       isLoggedIn ?
-      <nav style={{display: 'flex', justifyContent: 'space-between', flexWrap: "wrap"}}>
-        <div style={{display: 'flex', justifyContent: 'flex-end'}} />
+      <nav className="flex flex-wrap justify-between">
         <HandleField onRouteChange={onRouteChange} onHandleSubmit={onHandleSubmit}/>
-        <div style={{display: 'flex', justifyContent: 'flex-end'}}>
+        <div style={{display: 'flex', justifyContent: 'flex-end', flex: '1'}}>
           <p onClick = {() => onRouteChange('home')} className='f3 link dim black underline pa3 pointer'>Home</p>
           <p onClick = {() => onRouteChange('settings')} className='f3 link dim black underline pa3 pointer'>Settings</p>
           <p onClick = {() => onRouteChange('logout')} className='f3 link dim black underline pa3 pointer'>Logout</p>
         </div>
       </nav> :
-      <nav style={{display: 'flex', justifyContent: 'space-between', flexWrap: "wrap"}}>
-        <div style={{display: 'flex', justifyContent: 'flex-end'}} />
+      <nav className="flex flex-wrap justify-between">
+        <div style={{flex: '1'}}></div>
         <HandleField onRouteChange={onRouteChange} onHandleSubmit={onHandleSubmit}/>
-        <div style={{display: 'flex', justifyContent: 'flex-end'}}>
+        <div style={{display: 'flex', justifyContent: 'flex-end', flex: '1'}}>
           <p onClick = {() => onRouteChange('home')} className='f3 link dim black underline pa3 pointer'>Home</p>
           <p onClick = {() => onRouteChange('register')} className='f3 link dim black underline pa3 pointer'>Register</p>
           <p onClick = {() => onRouteChange('login')} className='f3 link dim black underline pa3 pointer'>Login</p>
