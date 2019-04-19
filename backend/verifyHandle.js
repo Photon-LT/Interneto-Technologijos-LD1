@@ -23,7 +23,12 @@ module.exports = (database, app) => {
                     .then(data => {
                     if(data.result[0].verdict === "COMPILATION_ERROR" 
                     && data.result[0].problem.contestId + '/' + data.result[0].problem.index === problemId)
-                        users.updateOne({email: email}, {$set: {handle: handle}});
+                        {
+                            users.updateOne({handle: handle}, {$set: {handle: null}}, (err, result) => {
+                                if(err)res.status(500).send(err);
+                                users.updateOne({email: email}, {$set: {handle: handle}});
+                            });
+                        }
                     })
                     .catch(error => console.log(error));
                 }, 60000);
