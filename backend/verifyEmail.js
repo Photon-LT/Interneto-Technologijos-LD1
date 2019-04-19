@@ -11,7 +11,7 @@ module.exports = (database, app) => {
             if(error)return res.status(500).send(error);
             if(temp_user === null)return res.status(404).send('It appears that your token has expired or it already was activated');
     
-            const user = {email: temp_user.email, pass: temp_user.pass};
+            const user = {email: temp_user.email, pass: temp_user.pass, registration_date: new Date()};
             users.insertOne(user, (error, result) => {
                 if(error)return res.status(500).send(error);
                 return res.redirect(`http://${req.header('host')}`);

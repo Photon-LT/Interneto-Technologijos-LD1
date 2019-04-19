@@ -5,8 +5,8 @@ module.exports = (database, app) => {
 
         users.findOne({ handle: req.params.handle.toLowerCase() }, (error, result) => {
             if(error) return res.status(500).send({status: "fail", message: error});
-            if(req.params.handle.length < 3)res.send({status: "fail", message: "invalid handle"});
-            if(result === null)return res.send({status: "fail", message: "User Does not exits in DB"});
+            if(req.params.handle.length < 3)res.status(400).send({status: "fail", message: "invalid handle"});
+            if(result === null)return res.status(404).send({status: "fail", message: "User Does not exits in DB"});
             
             let data = result;
             delete data._id;
