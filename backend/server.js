@@ -3,6 +3,7 @@ const express = require('express');
 const path = require('path');
 const MongoClient = require('mongodb').MongoClient;
 const app = express();
+const sslRedirect = require('heroku-ssl-redirect');
 
 const DB_URL = process.env.DB_URL;
 const DB_NAME = process.env.NODE_ENV === 'production' ? 'interneto_technologijos' : 'interneto_technologijos_testing';
@@ -11,7 +12,7 @@ const DB_NAME = process.env.NODE_ENV === 'production' ? 'interneto_technologijos
 app.use(express.static(path.join(__dirname, '..', 'build')));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-require('./forceHTTPSForHeroku');
+app.use(sslRedirect());
 
 //Main page
 app.get('/', (req, res) => {
