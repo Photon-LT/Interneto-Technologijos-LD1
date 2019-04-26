@@ -1,4 +1,5 @@
 const Joi = require('joi');
+const bcrypt = require('bcrypt');
 
 module.exports = (database, app) => {
     
@@ -12,12 +13,12 @@ module.exports = (database, app) => {
 
         users.findOne({email: email}, (error, user) => {
             if(user === null)return res.status(500).send({status: 'fail', message: 'Error'});
-            if(pass !== user.pass)return res.status(401).send({status: 'fail', message: 'Current password is incorrect'});
+            if(!bcrypt.compareSync(pass, user.pass))return res.status(401).send({status: 'fail', message: 'Current password is incorrect'});
             if(newPass !== newPass2)return res.status(400).send({status: 'fail', message: 'New password and confirm new password does not match'});
             
             Joi.validate({newPass, newPass2}, schema, (err, value) => {
                 if(err)return res.status(400).send({status: 'fail', message: err.details[0].message});
-                users.updateOne({email: email}, {$set: {pass: newPass}}, (error, result) => {
+                users.updateOne({email: email}, {$set: {pass: bcrypt.hashSync(newPass, 10)}}, (error, result) => {
                     if(error)return res.status(500).send(error);
                     res.send({status: 'ok', message: "Password successfully changed"});
                 });

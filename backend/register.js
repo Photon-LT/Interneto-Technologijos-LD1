@@ -1,5 +1,6 @@
 const randomString = require('randomstring');
 const nodemailer = require('nodemailer');
+const bcrypt = require('bcrypt');
 const Joi = require('joi');
 
 const EMAIL_PASS = process.env.EMAIL_PASS;
@@ -30,7 +31,7 @@ module.exports = (database, app) => {
                 if(err)return res.send({status: 'fail', message: err.details[0].message});
 
                 const token = randomString.generate(100);
-                user = {email, pass, token};
+                user = {email, pass: bcrypt.hashSync(pass, 10), token};
                 temp_users.insertOne(user,(error, result) => {
                     if(error)return res.status(500).send(error);
     

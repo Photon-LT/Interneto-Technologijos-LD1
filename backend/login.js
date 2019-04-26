@@ -1,4 +1,5 @@
 const randomString = require('randomstring');
+const bcrypt = require('bcrypt');
 
 module.exports = (database, app) => {
     
@@ -8,7 +9,7 @@ module.exports = (database, app) => {
 
         users.findOne({email: email}, (error, user) => {
             if(error) return res.status(500).send({status: "fail", message: error});
-            if(user === null || user.pass !== pass)return res.send({status: 'fail', message: 'User does not exist or incorrect password'});
+            if(user === null || !bcrypt.compareSync(pass, user.pass))return res.send({status: 'fail', message: 'User does not exist or incorrect password'});
 
             let data = user;
             delete data.pass;

@@ -1,3 +1,5 @@
+const bcrypt = require('bcrypt');
+
 module.exports = (database, app) => {
     
     app.delete("/delete/account", (req, res) => {
@@ -6,7 +8,7 @@ module.exports = (database, app) => {
 
         users.findOne({email: email}, (error, user) => {
             if(user === null)return res.status(500).send({status: 'fail', message: 'Error'});
-            if(pass !== user.pass)return res.status(401).send({status: 'fail', message: 'Incorrect password'});
+            if(!bcrypt.compareSync(pass, user.pass))return res.status(401).send({status: 'fail', message: 'Incorrect password'});
         
             users.deleteOne({email: email}, (error, result) => {
                 if(error)return res.status(500).send(error);
